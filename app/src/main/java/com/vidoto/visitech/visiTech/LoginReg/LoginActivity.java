@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.content.Context;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -26,6 +27,7 @@ import com.google.firebase.iid.InstanceIdResult;
 import com.vidoto.visitech.visiTech.ForgotPassword.ForgotPassActivity;
 import com.vidoto.visitech.visiTech.Home.MainActivity;
 import com.vidoto.visitech.visiTech.R;
+import com.vidoto.visitech.visiTech.Utils.FirebaseMessagingService;
 
 import java.util.Calendar;
 
@@ -137,35 +139,35 @@ public class LoginActivity extends AppCompatActivity {
                                 String userUID = mAuth.getCurrentUser().getUid();
                                 //String userDeiceToken = FirebaseInstanceId.getInstance().getToken();
                                 //*************
+                                String userDeiceToken = FirebaseMessagingService.getToken(LoginActivity.this);
+//                                FirebaseInstanceId.getInstance().getInstanceId()
+//                                        .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+//                                            @Override
+//                                            public void onComplete(@NonNull Task<InstanceIdResult> task) {
+//                                                if (!task.isSuccessful()) {
+//                                                    Log.w(TAG, "getInstanceId failed", task.getException());
+//                                                    return;
+//                                                }
+//
+//                                                // Get new Instance ID token
+//                                                String token = task.getResult().getToken();
+//
+//                                                // Log and toast
+////                                                String msg = getString(R.string.msg_token_fmt, token);
+//                                                String msg = getString(com.google.firebase. R.string.msg_token_fmt, token);
+//                                                Log.d(TAG, msg);
+//                                                SweetToast.error(LoginActivity.this,msg);
+//                                            }
+//                                        });
 
-                                FirebaseInstanceId.getInstance().getInstanceId()
-                                        .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                                                if (!task.isSuccessful()) {
-                                                    Log.w(TAG, "getInstanceId failed", task.getException());
-                                                    return;
-                                                }
-
-                                                // Get new Instance ID token
-                                                String token = task.getResult().getToken();
-
-                                                // Log and toast
-//                                                String msg = getString(R.string.msg_token_fmt, token);
-                                                String msg = getString(R.string.msg_token_fmt, token);
-                                                Log.d(TAG, msg);
-                                                SweetToast.error(LoginActivity.this,msg);
-                                            }
-                                        });
-
-                                Task<InstanceIdResult> userDeiceToken = FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(LoginActivity.this,  new OnSuccessListener<InstanceIdResult>() {
-                                    @Override
-                                    public void onSuccess(InstanceIdResult instanceIdResult) {
-                                        String newToken = instanceIdResult.getToken();
-                                        Log.e("newToken",newToken);
-
-                                    }
-                                });
+//                                Task<InstanceIdResult> userDeiceToken = FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(LoginActivity.this,  new OnSuccessListener<InstanceIdResult>() {
+//                                    @Override
+//                                    public void onSuccess(InstanceIdResult instanceIdResult) {
+//                                        String newToken = instanceIdResult.getToken();
+//                                        Log.e("newToken",newToken);
+//
+//                                    }
+//                                });
 
                                 //***************
                                 userDatabaseReference.child(userUID).child("device_token").setValue(userDeiceToken)
@@ -181,7 +183,7 @@ public class LoginActivity extends AppCompatActivity {
                             }
 
                             progressDialog.dismiss();
-                            checkVerifiedEmail();
+//                            checkVerifiedEmail();
 
 
                         }

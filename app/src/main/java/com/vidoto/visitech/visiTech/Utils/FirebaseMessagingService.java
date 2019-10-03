@@ -4,9 +4,12 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
+import android.util.Log;
+
 import androidx.core.app.NotificationCompat;
 
 import com.google.firebase.messaging.RemoteMessage;
@@ -15,6 +18,7 @@ import com.vidoto.visitech.visiTech.R;
 public class FirebaseMessagingService extends com.google.firebase.messaging.FirebaseMessagingService {
 
     public String deviceTokenFirebase;
+
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
@@ -82,6 +86,12 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
         // Do whatever you want with your token now
         // i.e. store it on SharedPreferences or DB
         // or directly send it to server
+        Log.e("newToken", s);
+        getSharedPreferences("_", MODE_PRIVATE).edit().putString("fb", s).apply();
+    }
+
+    public static String getToken(Context context) {
+        return context.getSharedPreferences("_", MODE_PRIVATE).getString("fb", "empty");
     }
 
 

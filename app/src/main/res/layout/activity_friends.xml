@@ -15,6 +15,26 @@
         layout="@layout/all_app_bar_layout"
         android:id="@+id/friends_appbar"/>
 
+    <Button
+        android:id="@+id/btnAddVisit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add Visit" />
+
+    <EditText
+        android:id="@+id/edID"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Id Visit" />
+
+    <Button
+        android:id="@+id/btnDelVisit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Del Visit" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"

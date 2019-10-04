@@ -12,6 +12,8 @@ import androidx.appcompat.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -27,12 +29,14 @@ import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.vidoto.visitech.visiTech.Chat.ChatActivity;
 import com.vidoto.visitech.visiTech.Model.Friends;
+import com.vidoto.visitech.visiTech.Model.Visit;
 import com.vidoto.visitech.visiTech.Profile.ProfileActivity;
 import com.vidoto.visitech.visiTech.R;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import xyz.hasnat.sweettoast.SweetToast;
 
 public class FriendsActivity extends AppCompatActivity {
 
@@ -42,6 +46,12 @@ public class FriendsActivity extends AppCompatActivity {
     private DatabaseReference friendsDatabaseReference;
     private DatabaseReference userDatabaseReference;
     private FirebaseAuth mAuth;
+
+    private DatabaseReference visitDatabaseReference;
+    private Visit visit;
+    private long maxid;
+    private Button btnAddVisit, btnDelVisit;
+    private EditText edID;
 
     String current_user_id;
 
@@ -72,6 +82,53 @@ public class FriendsActivity extends AppCompatActivity {
         friend_list_RV.setLayoutManager(new LinearLayoutManager(this));
 
         showPeopleList();
+
+        //***********************************************************************************************************************************************
+        visit = new Visit();
+        btnAddVisit=(Button)findViewById(R.id.btnAddVisit);
+        btnDelVisit=(Button)findViewById(R.id.btnDelVisit);
+        edID=(EditText)findViewById(R.id.edID);
+
+        visitDatabaseReference = FirebaseDatabase.getInstance().getReference().child("Visit");
+        visitDatabaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists())
+                    maxid=(dataSnapshot.getChildrenCount());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        btnAddVisit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                visit.setTp_visit("Problema");
+                visit.setCall_erp("124");
+                visit.setCustomer("Marchesan");
+                visit.setProduct("Plantadeira");
+
+                visitDatabaseReference.child(String.valueOf(maxid+1)).setValue(visit);
+                SweetToast.info(FriendsActivity.this, "Visita Cadastrada com suscesso. ID: " + (maxid+1));
+
+            }
+        });
+
+        btnDelVisit.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                String id = String.valueOf(edID.getText());
+                visitDatabaseReference.child(id).removeValue();
+                SweetToast.info(FriendsActivity.this, "Visita Removida com suscesso. ID: " + (id));
+            }
+        });
+
+        //***********************************************************************************************************************************************
+
+
     }
 
     /**

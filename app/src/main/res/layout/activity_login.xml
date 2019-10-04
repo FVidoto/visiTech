@@ -39,6 +39,7 @@
                 android:id="@+id/inputEmail"
                 android:inputType="textEmailAddress"
                 android:hint=" Email"
+                android:text="fvidoto@gmail.com"
                 />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -56,6 +57,7 @@
                 android:inputType="textPassword"
                 android:hint=" Password"
                 android:id="@+id/inputPassword"
+                android:text="123456"
                 />
         </com.google.android.material.textfield.TextInputLayout>
 

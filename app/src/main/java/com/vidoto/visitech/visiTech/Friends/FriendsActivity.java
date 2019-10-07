@@ -75,13 +75,15 @@ public class FriendsActivity extends AppCompatActivity {
         userDatabaseReference = FirebaseDatabase.getInstance().getReference().child("users");
         userDatabaseReference.keepSynced(true); // for offline
 
+        visitDatabaseReference = FirebaseDatabase.getInstance().getReference().child("Visit");
 
         // Setup recycler view
         friend_list_RV = findViewById(R.id.friendList);
         friend_list_RV.setHasFixedSize(true);
         friend_list_RV.setLayoutManager(new LinearLayoutManager(this));
 
-        showPeopleList();
+//        showPeopleList();
+        showVisitsList();
 
         //***********************************************************************************************************************************************
         visit = new Visit();
@@ -89,7 +91,6 @@ public class FriendsActivity extends AppCompatActivity {
         btnDelVisit=(Button)findViewById(R.id.btnDelVisit);
         edID=(EditText)findViewById(R.id.edID);
 
-        visitDatabaseReference = FirebaseDatabase.getInstance().getReference().child("Visit");
         visitDatabaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -136,88 +137,199 @@ public class FriendsActivity extends AppCompatActivity {
      *
      *  Library link- https://github.com/firebase/FirebaseUI-Android
      */
-    private void showPeopleList(){
-        FirebaseRecyclerOptions<Friends> recyclerOptions = new FirebaseRecyclerOptions.Builder<Friends>()
-                .setQuery(friendsDatabaseReference, Friends.class)
+//    private void showPeopleList(){
+//        FirebaseRecyclerOptions<Friends> recyclerOptions = new FirebaseRecyclerOptions.Builder<Friends>()
+//                .setQuery(friendsDatabaseReference, Friends.class)
+//                .build();
+//
+//        FirebaseRecyclerAdapter<Friends, FriendsVH> recyclerAdapter = new FirebaseRecyclerAdapter<Friends, FriendsVH>(recyclerOptions) {
+//            @Override
+//            protected void onBindViewHolder(@NonNull final FriendsVH holder, int position, @NonNull Friends model) {
+//                holder.date.setText("Friendship date -\n" + model.getDate());
+//
+//                final String userID = getRef(position).getKey();
+//
+//                userDatabaseReference.child(userID).addValueEventListener(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
+//                        final String userName = dataSnapshot.child("user_name").getValue().toString();
+//                        String userThumbPhoto = dataSnapshot.child("user_thumb_image").getValue().toString();
+//                        String active_status = dataSnapshot.child("active_now").getValue().toString();
+//
+//                        // online active status
+//                        holder.active_icon.setVisibility(View.GONE);
+//                        if (active_status.contains("active_now")){
+//                            holder.active_icon.setVisibility(View.VISIBLE);
+//                        } else {
+//                            holder.active_icon.setVisibility(View.GONE);
+//                        }
+//
+//                        holder.name.setText(userName);
+//                        Picasso.get()
+//                                .load(userThumbPhoto)
+//                                .networkPolicy(NetworkPolicy.OFFLINE) // for Offline
+//                                .placeholder(R.drawable.default_profile_image)
+//                                .into(holder.profile_thumb);
+//
+//
+//                        //click item, 2 options in a dialogue will be appear
+//                        holder.itemView.setOnClickListener(new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View v) {
+//                                CharSequence options[] =  new CharSequence[]{"Send Message", userName+"'s profile"};
+//                                AlertDialog.Builder builder = new AlertDialog.Builder(FriendsActivity.this);
+//                                builder.setItems(options, new DialogInterface.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(DialogInterface dialog, int which) {
+//                                        if (which == 0){
+//                                            // user active status validation
+//                                            if (dataSnapshot.child("active_now").exists()){
+//
+//                                                Intent chatIntent = new Intent(FriendsActivity.this, ChatActivity.class);
+//                                                chatIntent.putExtra("visitUserId", userID);
+//                                                chatIntent.putExtra("userName", userName);
+//                                                startActivity(chatIntent);
+//
+//                                            } else {
+//                                                userDatabaseReference.child(userID).child("active_now")
+//                                                        .setValue(ServerValue.TIMESTAMP).addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                                    @Override
+//                                                    public void onSuccess(Void aVoid) {
+//                                                        Intent chatIntent = new Intent(FriendsActivity.this, ChatActivity.class);
+//                                                        chatIntent.putExtra("visitUserId", userID);
+//                                                        chatIntent.putExtra("userName", userName);
+//                                                        startActivity(chatIntent);
+//                                                    }
+//                                                });
+//
+//
+//                                            }
+//
+//                                        }
+//
+//                                        if (which == 1){
+//                                            Intent profileIntent = new Intent(FriendsActivity.this, ProfileActivity.class);
+//                                            profileIntent.putExtra("visitUserId", userID);
+//                                            startActivity(profileIntent);
+//                                        }
+//
+//                                    }
+//                                });
+//                                builder.show();
+//
+//                            }
+//                        });
+//
+//
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError databaseError) {
+//                    }
+//                });
+//
+//
+//            }
+//
+//            @NonNull
+//            @Override
+//            public FriendsVH onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+//                View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.all_single_profile_display, viewGroup, false);
+//                return new FriendsVH(view);
+//            }
+//        };
+//
+//        friend_list_RV.setAdapter(recyclerAdapter);
+//        recyclerAdapter.startListening();
+//    }
+
+    private void showVisitsList(){
+        FirebaseRecyclerOptions<Visit> recyclerOptions = new FirebaseRecyclerOptions.Builder<Visit>()
+                .setQuery(visitDatabaseReference, Visit.class)
                 .build();
 
-        FirebaseRecyclerAdapter<Friends, FriendsVH> recyclerAdapter = new FirebaseRecyclerAdapter<Friends, FriendsVH>(recyclerOptions) {
+        FirebaseRecyclerAdapter<Visit, VisitVH> recyclerAdapter = new FirebaseRecyclerAdapter<Visit, VisitVH>(recyclerOptions) {
             @Override
-            protected void onBindViewHolder(@NonNull final FriendsVH holder, int position, @NonNull Friends model) {
-                holder.date.setText("Friendship date -\n" + model.getDate());
+            protected void onBindViewHolder(@NonNull final VisitVH holder, int position, @NonNull Visit model) {
+//                holder.date.setText("Friendship date -\n" + model.getDate());
 
                 final String userID = getRef(position).getKey();
 
-                userDatabaseReference.child(userID).addValueEventListener(new ValueEventListener() {
+                visitDatabaseReference.child(userID).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
-                        final String userName = dataSnapshot.child("user_name").getValue().toString();
-                        String userThumbPhoto = dataSnapshot.child("user_thumb_image").getValue().toString();
-                        String active_status = dataSnapshot.child("active_now").getValue().toString();
+                        final String tp_visit = dataSnapshot.child("tp_visit").getValue().toString();
+                        String product = dataSnapshot.child("product").getValue().toString();
+                        String customer = dataSnapshot.child("customer").getValue().toString();
+                        String call_erp = dataSnapshot.child("call_erp").getValue().toString();
 
                         // online active status
-                        holder.active_icon.setVisibility(View.GONE);
-                        if (active_status.contains("active_now")){
-                            holder.active_icon.setVisibility(View.VISIBLE);
-                        } else {
-                            holder.active_icon.setVisibility(View.GONE);
-                        }
+//                        holder.active_icon.setVisibility(View.GONE);
+//                        if (active_status.contains("active_now")){
+//                            holder.active_icon.setVisibility(View.VISIBLE);
+//                        } else {
+//                            holder.active_icon.setVisibility(View.GONE);
+//                        }
 
-                        holder.name.setText(userName);
-                        Picasso.get()
-                                .load(userThumbPhoto)
-                                .networkPolicy(NetworkPolicy.OFFLINE) // for Offline
-                                .placeholder(R.drawable.default_profile_image)
-                                .into(holder.profile_thumb);
+                        holder.tp_visit.setText(tp_visit);
+                        holder.product.setText(product);
+                        holder.customer.setText(customer);
+                        holder.call_erp.setText(call_erp);
+
+//                        Picasso.get()
+//                                .load(userThumbPhoto)
+//                                .networkPolicy(NetworkPolicy.OFFLINE) // for Offline
+//                                .placeholder(R.drawable.default_profile_image)
+//                                .into(holder.profile_thumb);
 
 
                         //click item, 2 options in a dialogue will be appear
-                        holder.itemView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                CharSequence options[] =  new CharSequence[]{"Send Message", userName+"'s profile"};
-                                AlertDialog.Builder builder = new AlertDialog.Builder(FriendsActivity.this);
-                                builder.setItems(options, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        if (which == 0){
-                                            // user active status validation
-                                            if (dataSnapshot.child("active_now").exists()){
-
-                                                Intent chatIntent = new Intent(FriendsActivity.this, ChatActivity.class);
-                                                chatIntent.putExtra("visitUserId", userID);
-                                                chatIntent.putExtra("userName", userName);
-                                                startActivity(chatIntent);
-
-                                            } else {
-                                                userDatabaseReference.child(userID).child("active_now")
-                                                        .setValue(ServerValue.TIMESTAMP).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                    @Override
-                                                    public void onSuccess(Void aVoid) {
-                                                        Intent chatIntent = new Intent(FriendsActivity.this, ChatActivity.class);
-                                                        chatIntent.putExtra("visitUserId", userID);
-                                                        chatIntent.putExtra("userName", userName);
-                                                        startActivity(chatIntent);
-                                                    }
-                                                });
-
-
-                                            }
-
-                                        }
-
-                                        if (which == 1){
-                                            Intent profileIntent = new Intent(FriendsActivity.this, ProfileActivity.class);
-                                            profileIntent.putExtra("visitUserId", userID);
-                                            startActivity(profileIntent);
-                                        }
-
-                                    }
-                                });
-                                builder.show();
-
-                            }
-                        });
+//                        holder.itemView.setOnClickListener(new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View v) {
+//                                CharSequence options[] =  new CharSequence[]{"Send Message", userName+"'s profile"};
+//                                AlertDialog.Builder builder = new AlertDialog.Builder(FriendsActivity.this);
+//                                builder.setItems(options, new DialogInterface.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(DialogInterface dialog, int which) {
+//                                        if (which == 0){
+//                                            // user active status validation
+//                                            if (dataSnapshot.child("active_now").exists()){
+//
+//                                                Intent chatIntent = new Intent(FriendsActivity.this, ChatActivity.class);
+//                                                chatIntent.putExtra("visitUserId", userID);
+//                                                chatIntent.putExtra("userName", userName);
+//                                                startActivity(chatIntent);
+//
+//                                            } else {
+//                                                userDatabaseReference.child(userID).child("active_now")
+//                                                        .setValue(ServerValue.TIMESTAMP).addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                                    @Override
+//                                                    public void onSuccess(Void aVoid) {
+//                                                        Intent chatIntent = new Intent(FriendsActivity.this, ChatActivity.class);
+//                                                        chatIntent.putExtra("visitUserId", userID);
+//                                                        chatIntent.putExtra("userName", userName);
+//                                                        startActivity(chatIntent);
+//                                                    }
+//                                                });
+//
+//
+//                                            }
+//
+//                                        }
+//
+//                                        if (which == 1){
+//                                            Intent profileIntent = new Intent(FriendsActivity.this, ProfileActivity.class);
+//                                            profileIntent.putExtra("visitUserId", userID);
+//                                            startActivity(profileIntent);
+//                                        }
+//
+//                                    }
+//                                });
+//                                builder.show();
+//
+//                            }
+//                        });
 
 
                     }
@@ -232,9 +344,9 @@ public class FriendsActivity extends AppCompatActivity {
 
             @NonNull
             @Override
-            public FriendsVH onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-                View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.all_single_profile_display, viewGroup, false);
-                return new FriendsVH(view);
+            public VisitVH onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+                View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.all_simple_text, viewGroup, false);
+                return new VisitVH(view);
             }
         };
 
@@ -242,20 +354,34 @@ public class FriendsActivity extends AppCompatActivity {
         recyclerAdapter.startListening();
     }
 
-    public static class FriendsVH extends RecyclerView.ViewHolder{
-        public TextView name;
-        TextView date;
-        CircleImageView profile_thumb;
-        ImageView active_icon;
+//    public static class FriendsVH extends RecyclerView.ViewHolder{
+//        public TextView name;
+//        TextView date;
+//        CircleImageView profile_thumb;
+//        ImageView active_icon;
+//
+//        public FriendsVH(View itemView) {
+//            super(itemView);
+//            name = itemView.findViewById(R.id.all_user_name);
+//            date = itemView.findViewById(R.id.all_user_status);
+//            profile_thumb = itemView.findViewById(R.id.all_user_profile_img);
+//            active_icon = itemView.findViewById(R.id.activeIcon);
+//        }
+//    }
 
-        public FriendsVH(View itemView) {
+    public static class VisitVH extends RecyclerView.ViewHolder{
+        public TextView tp_visit;
+        TextView product;
+        TextView customer;
+        TextView call_erp;
+
+        public VisitVH(View itemView) {
             super(itemView);
-            name = itemView.findViewById(R.id.all_user_name);
-            date = itemView.findViewById(R.id.all_user_status);
-            profile_thumb = itemView.findViewById(R.id.all_user_profile_img);
-            active_icon = itemView.findViewById(R.id.activeIcon);
+            tp_visit = itemView.findViewById(R.id.all_tp_visit);
+            product = itemView.findViewById(R.id.all_product);
+            customer = itemView.findViewById(R.id.all_customer);
+            call_erp = itemView.findViewById(R.id.all_call_erp);
         }
     }
-
 
 }

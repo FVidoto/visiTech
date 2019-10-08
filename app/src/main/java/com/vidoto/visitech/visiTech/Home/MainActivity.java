@@ -37,7 +37,7 @@ import com.vidoto.visitech.visiTech.R;
 import com.vidoto.visitech.visiTech.ProfileSetting.SettingsActivity;
 import com.vidoto.visitech.visiTech.Adapter.TabsPagerAdapter;
 import com.vidoto.visitech.visiTech.Search.SearchActivity;
-
+import com.vidoto.visitech.visiTech.Visit.TpVisitList;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -174,6 +174,11 @@ public class MainActivity extends AppCompatActivity {
 
         if (item.getItemId() == R.id.all_friends){
             Intent intent =  new Intent(MainActivity.this, FriendsActivity.class);
+            startActivity(intent);
+        }
+
+        if (item.getItemId() == R.id.all_tp_visit){
+            Intent intent =  new Intent(MainActivity.this, TpVisitList.class);
             startActivity(intent);
         }
 

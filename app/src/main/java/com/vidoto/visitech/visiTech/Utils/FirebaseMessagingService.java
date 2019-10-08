@@ -83,7 +83,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
     public void onNewToken(String s) {
         super.onNewToken(s);
         deviceTokenFirebase = s;
-        // Do whatever you want with your token now
+        // Do whatever you want with your token nowSDA
         // i.e. store it on SharedPreferences or DB
         // or directly send it to server
         Log.e("newToken", s);

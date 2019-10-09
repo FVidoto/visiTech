@@ -1,0 +1,7 @@
+**** Dia 09/10/2019 ****
+Foi adicionado a manutenção de tipo de visita.
+Temos o Recycle View e também a função de manutenção.
+Posso utilizar como exemplo para os outros cadastros.
+Falta verificar o porque está salvando somente no primeiro ID (tem haver com o MAXID).
+Arrumar o Layout de manutenção.
+No Departamento, deixar uma lista para escolher entre departamentos pré-definidos (Pós Vendas, Vendas)

@@ -1,5 +1,6 @@
 package com.vidoto.visitech.visiTech.Visit;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,14 +54,14 @@ public class TpVisitList extends AppCompatActivity {
 
         toolbar = findViewById(R.id.tpVisit_appbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("TpVisit");
+        getSupportActionBar().setTitle("Tipos de Visitas");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         mAuth = FirebaseAuth.getInstance();
         current_user_id = mAuth.getCurrentUser().getUid();
 
-        tpVisitDatabaseReference = FirebaseDatabase.getInstance().getReference().child("tpvisit").child(current_user_id);
+        tpVisitDatabaseReference = FirebaseDatabase.getInstance().getReference().child("tpvisit");//.child(current_user_id);
         tpVisitDatabaseReference.keepSynced(true); // for offline
 
         // Setup recycler view
@@ -68,20 +69,19 @@ public class TpVisitList extends AppCompatActivity {
         tpVisit_list_RV.setHasFixedSize(true);
         tpVisit_list_RV.setLayoutManager(new LinearLayoutManager(this));
 
-
-
 //        showPeopleList();
         showtpVisitsList();
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                // chamar a intent TpVisitActivity
+            public void onClick(View view2) {
+                                            Intent tpVisitIntent = new Intent(TpVisitList.this, TpVisitActivity.class);
+                                            tpVisitIntent.putExtra("tpVisitId", "");
+                                            startActivity(tpVisitIntent);
+
             }
         });
-
-
     }
 
     private void showtpVisitsList(){
@@ -92,18 +92,30 @@ public class TpVisitList extends AppCompatActivity {
         FirebaseRecyclerAdapter<TpVisit, TpVisitVH> recyclerAdapter = new FirebaseRecyclerAdapter<TpVisit, TpVisitVH>(recyclerOptions) {
             @Override
             protected void onBindViewHolder(@NonNull final TpVisitVH holder, int position, @NonNull TpVisit model) {
-//                holder.date.setText("Friendship date -\n" + model.getDate());
 
                 final String userID = getRef(position).getKey();
 
                 tpVisitDatabaseReference.child(userID).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
+                        final String id_tp_visit = dataSnapshot.getKey();
                         String tp_visit = dataSnapshot.child("tp_visit").getValue().toString();
                         String department = dataSnapshot.child("department").getValue().toString();
 
+                        holder.id_tp_visit.setText(id_tp_visit);
                         holder.tp_visit.setText(tp_visit);
                         holder.department.setText(department);
+
+                        // Adicionar o OnClick aqui!
+                        holder.itemView.setOnClickListener(new View.OnClickListener(){
+                            @Override
+                            public void onClick(View v) {
+                                Intent tpVisitIntent = new Intent(TpVisitList.this, TpVisitActivity.class);
+                                tpVisitIntent.putExtra("tpVisitId", id_tp_visit);
+                                startActivity(tpVisitIntent);
+                            }
+                        });
+
                     }
 
                     @Override
@@ -125,11 +137,13 @@ public class TpVisitList extends AppCompatActivity {
     }
 
     public static class TpVisitVH extends RecyclerView.ViewHolder{
+        TextView id_tp_visit;
         TextView tp_visit;
         TextView department;
 
         public TpVisitVH(View itemView) {
             super(itemView);
+            id_tp_visit = itemView.findViewById(R.id.all_id_text);
             tp_visit = itemView.findViewById(R.id.all_text_1);
             department = itemView.findViewById(R.id.all_text_2);
         }

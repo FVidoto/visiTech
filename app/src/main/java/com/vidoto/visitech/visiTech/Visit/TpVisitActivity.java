@@ -23,6 +23,9 @@ import com.vidoto.visitech.visiTech.R;
 
 public class TpVisitActivity extends AppCompatActivity {
 
+    private String messageReceiverID;
+    private String senderId;
+
     private TextView tvIdTpVisit;
     private EditText edTpVisit, edDepartament;
     private Button btnSave, btnDel;
@@ -48,14 +51,32 @@ public class TpVisitActivity extends AppCompatActivity {
         tpVisitDatabaseReference = FirebaseDatabase.getInstance().getReference().child("tpvisit");
         tpVisitDatabaseReference.keepSynced(true); // for offline
 
+        messageReceiverID = getIntent().getExtras().get("tpVisitId").toString();
+        senderId = messageReceiverID;
+
         tvIdTpVisit = findViewById(R.id.tvIdTpVisit);
         edTpVisit = findViewById(R.id.inputTpVisit);
         edDepartament = findViewById(R.id.inputDept);
         btnSave = findViewById(R.id.saveButton);
         btnDel = findViewById(R.id.delButton);
 
+        // Se a Intent está retornando valor no Extra, então é alteração. Caso não retorne é inclusão.
+        if (!messageReceiverID.isEmpty()){
 
+            tpVisitDatabaseReference.child(senderId).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    tvIdTpVisit.setText(senderId);
+                    edTpVisit.setText(dataSnapshot.child("tp_visit").getValue().toString());
+                    edDepartament.setText(dataSnapshot.child("department").getValue().toString());
+                }
 
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
 
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,12 +86,17 @@ public class TpVisitActivity extends AppCompatActivity {
                 sDepartament = edDepartament.getText().toString();
 
                 saveTpVisit(sTpVisit, sDepartament);
-
             }
         });
 
+        btnDel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sIdTpVisit = tvIdTpVisit.getText().toString();
 
-
+                delTpVisit(Long.parseLong(sIdTpVisit));
+            }
+        });
     }
 
     private void saveTpVisit(String vTpVisit, String vDepartament) {
@@ -96,7 +122,15 @@ public class TpVisitActivity extends AppCompatActivity {
         tpVisitDatabaseReference.child(String.valueOf(maxid+1)).setValue(tpVisit);
         SweetToast.info(TpVisitActivity.this, "Tipo de Visita Cadastrada com suscesso. ID: " + (maxid+1));
         /*fim - Cadastro de novo tipo de Visita*/
-        Snackbar.make(view, "Adicionado Novo Item", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show();
     }
+
+    private void delTpVisit(long vIdTpVisit) {
+        /*Remove tipo de Visita*/
+
+        tpVisitDatabaseReference.child(String.valueOf(vIdTpVisit)).removeValue();
+        SweetToast.info(TpVisitActivity.this, "Tipo de Visita Removido com suscesso. ID: " + (vIdTpVisit));
+        /*fim - Remove tipo de Visita*/
+    }
+
+
 }

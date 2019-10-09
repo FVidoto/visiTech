@@ -77,30 +77,7 @@ public class TpVisitList extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*Cadastro de novo tipo de Visita*/
-                tpVisit = new TpVisit();
-
-                tpVisitDatabaseReference.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.exists())
-                            maxid=(dataSnapshot.getChildrenCount());
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-
-                tpVisit.setTp_visit("Visita");
-                tpVisit.setDepartment("Vendas");
-
-                tpVisitDatabaseReference.child(String.valueOf(maxid+1)).setValue(tpVisit);
-                SweetToast.info(TpVisitList.this, "Tipo de Visita Cadastrada com suscesso. ID: " + (maxid+1));
-                /*fim - Cadastro de novo tipo de Visita*/
-                Snackbar.make(view, "Adicionado Novo Item", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                // chamar a intent TpVisitActivity
             }
         });
 
